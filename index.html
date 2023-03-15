@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>Water Components Asset Mapping of Varanasi City</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/multi-style-layer.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/Ward_Boundary_1.js"></script>
+        <script src="data/WTP_2.js"></script>
+        <script src="data/STP_3.js"></script>
+        <script src="data/PumpingStation_4.js"></script>
+        <script src="data/OverheadTank_5.js"></script>
+        <script src="data/TubeWells_6.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[25.247480639404078,82.8759617811281],[25.397794780864498,83.1840294695273]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_OpenStreetMap_0');
+        map.getPane('pane_OpenStreetMap_0').style.zIndex = 400;
+        var layer_OpenStreetMap_0 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OpenStreetMap_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OpenStreetMap_0;
+        map.addLayer(layer_OpenStreetMap_0);
+        function pop_Ward_Boundary_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">W_NUM</th>\
+                        <td>' + (feature.properties['W_NUM'] !== null ? autolinker.link(feature.properties['W_NUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">W_AREA</th>\
+                        <td>' + (feature.properties['W_AREA'] !== null ? autolinker.link(feature.properties['W_AREA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">W_POP</th>\
+                        <td>' + (feature.properties['W_POP'] !== null ? autolinker.link(feature.properties['W_POP'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Zone</th>\
+                        <td>' + (feature.properties['Zone'] !== null ? autolinker.link(feature.properties['Zone'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">W_ID</th>\
+                        <td>' + (feature.properties['W_ID'] !== null ? autolinker.link(feature.properties['W_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Ward</th>\
+                        <td>' + (feature.properties['Ward'] !== null ? autolinker.link(feature.properties['Ward'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['STP_Type'] !== null ? autolinker.link(feature.properties['STP_Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['STP_Name'] !== null ? autolinker.link(feature.properties['STP_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['STP_Longitude'] !== null ? autolinker.link(feature.properties['STP_Longitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['STP_Latitude'] !== null ? autolinker.link(feature.properties['STP_Latitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Ward_Boundary_1_0(feature) {
+            if (feature.properties['W_POP'] >= 5000.000000 && feature.properties['W_POP'] <= 8939.400000 ) {
+                return {
+                pane: 'pane_Ward_Boundary_1',
+                opacity: 1,
+                color: 'rgba(128,62,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,212,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['W_POP'] >= 8939.400000 && feature.properties['W_POP'] <= 12522.000000 ) {
+                return {
+                pane: 'pane_Ward_Boundary_1',
+                opacity: 1,
+                color: 'rgba(128,62,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,217,142,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['W_POP'] >= 12522.000000 && feature.properties['W_POP'] <= 13901.400000 ) {
+                return {
+                pane: 'pane_Ward_Boundary_1',
+                opacity: 1,
+                color: 'rgba(128,62,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,153,41,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['W_POP'] >= 13901.400000 && feature.properties['W_POP'] <= 19452.200000 ) {
+                return {
+                pane: 'pane_Ward_Boundary_1',
+                opacity: 1,
+                color: 'rgba(128,62,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(217,95,14,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['W_POP'] >= 19452.200000 && feature.properties['W_POP'] <= 30000.000000 ) {
+                return {
+                pane: 'pane_Ward_Boundary_1',
+                opacity: 1,
+                color: 'rgba(128,62,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(153,52,4,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        function style_Ward_Boundary_1_1(feature) {
+            if (feature.properties['W_POP'] >= 5000.000000 && feature.properties['W_POP'] <= 8939.400000 ) {
+                return {
+                pane: 'pane_Ward_Boundary_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,212,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['W_POP'] >= 8939.400000 && feature.properties['W_POP'] <= 12522.000000 ) {
+                return {
+                pane: 'pane_Ward_Boundary_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,217,142,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['W_POP'] >= 12522.000000 && feature.properties['W_POP'] <= 13901.400000 ) {
+                return {
+                pane: 'pane_Ward_Boundary_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,153,41,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['W_POP'] >= 13901.400000 && feature.properties['W_POP'] <= 19452.200000 ) {
+                return {
+                pane: 'pane_Ward_Boundary_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(217,95,14,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['W_POP'] >= 19452.200000 && feature.properties['W_POP'] <= 30000.000000 ) {
+                return {
+                pane: 'pane_Ward_Boundary_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(153,52,4,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_Ward_Boundary_1');
+        map.getPane('pane_Ward_Boundary_1').style.zIndex = 401;
+        map.getPane('pane_Ward_Boundary_1').style['mix-blend-mode'] = 'normal';
+        var layer_Ward_Boundary_1 = new L.geoJson.multiStyle(json_Ward_Boundary_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Ward_Boundary_1',
+            layerName: 'layer_Ward_Boundary_1',
+            pane: 'pane_Ward_Boundary_1',
+            onEachFeature: pop_Ward_Boundary_1,
+            styles: [style_Ward_Boundary_1_0,style_Ward_Boundary_1_1,]
+        });
+        bounds_group.addLayer(layer_Ward_Boundary_1);
+        map.addLayer(layer_Ward_Boundary_1);
+        function pop_WTP_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Location of WTP</th>\
+                        <td>' + (feature.properties['Location of WTP'] !== null ? autolinker.link(feature.properties['Location of WTP'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Designed capacity in MLD</th>\
+                        <td>' + (feature.properties['Designed capacity in MLD'] !== null ? autolinker.link(feature.properties['Designed capacity in MLD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Operational capacity in MLD</th>\
+                        <td>' + (feature.properties['Operational capacity in MLD'] !== null ? autolinker.link(feature.properties['Operational capacity in MLD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Water supply source</th>\
+                        <td>' + (feature.properties['Water supply source'] !== null ? autolinker.link(feature.properties['Water supply source'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Technology used for automatic monitoring</th>\
+                        <td>' + (feature.properties['Technology used for automatic monitoring'] !== null ? autolinker.link(feature.properties['Technology used for automatic monitoring'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Latitude'] !== null ? autolinker.link(feature.properties['Latitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Longitude'] !== null ? autolinker.link(feature.properties['Longitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_WTP_2_0() {
+            return {
+                pane: 'pane_WTP_2',
+                shape: 'triangle',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(72,123,182,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_WTP_2');
+        map.getPane('pane_WTP_2').style.zIndex = 402;
+        map.getPane('pane_WTP_2').style['mix-blend-mode'] = 'normal';
+        var layer_WTP_2 = new L.geoJson(json_WTP_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_WTP_2',
+            layerName: 'layer_WTP_2',
+            pane: 'pane_WTP_2',
+            onEachFeature: pop_WTP_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_WTP_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_WTP_2);
+        map.addLayer(layer_WTP_2);
+        function pop_STP_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Type</th>\
+                        <td>' + (feature.properties['Type'] !== null ? autolinker.link(feature.properties['Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Longitude'] !== null ? autolinker.link(feature.properties['Longitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Latitude'] !== null ? autolinker.link(feature.properties['Latitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_STP_3_0() {
+            return {
+                pane: 'pane_STP_3',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(0,230,118,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 4.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            }
+        }
+        function style_STP_3_1() {
+            return {
+                pane: 'pane_STP_3',
+                radius: 1.722484210526315,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 3.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_STP_3');
+        map.getPane('pane_STP_3').style.zIndex = 403;
+        map.getPane('pane_STP_3').style['mix-blend-mode'] = 'normal';
+        var layer_STP_3 = new L.geoJson.multiStyle(json_STP_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_STP_3',
+            layerName: 'layer_STP_3',
+            pane: 'pane_STP_3',
+            onEachFeature: pop_STP_3,
+            pointToLayers: [function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_STP_3_0(feature));
+            },function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_STP_3_1(feature));
+            },
+        ]});
+        bounds_group.addLayer(layer_STP_3);
+        map.addLayer(layer_STP_3);
+        function pop_PumpingStation_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Type</th>\
+                        <td>' + (feature.properties['Type'] !== null ? autolinker.link(feature.properties['Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Latitude'] !== null ? autolinker.link(feature.properties['Latitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Longitude'] !== null ? autolinker.link(feature.properties['Longitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_PumpingStation_4_0() {
+            return {
+                pane: 'pane_PumpingStation_4',
+                shape: 'square',
+                radius: 6.000000000000002,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 3.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_PumpingStation_4');
+        map.getPane('pane_PumpingStation_4').style.zIndex = 404;
+        map.getPane('pane_PumpingStation_4').style['mix-blend-mode'] = 'normal';
+        var layer_PumpingStation_4 = new L.geoJson(json_PumpingStation_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_PumpingStation_4',
+            layerName: 'layer_PumpingStation_4',
+            pane: 'pane_PumpingStation_4',
+            onEachFeature: pop_PumpingStation_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_PumpingStation_4_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_PumpingStation_4);
+        map.addLayer(layer_PumpingStation_4);
+        function pop_OverheadTank_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Type</th>\
+                        <td>' + (feature.properties['Type'] !== null ? autolinker.link(feature.properties['Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Latitude'] !== null ? autolinker.link(feature.properties['Latitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Longitude'] !== null ? autolinker.link(feature.properties['Longitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_OverheadTank_5_0() {
+            return {
+                pane: 'pane_OverheadTank_5',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/background_square_rounded.svg',
+            iconSize: [23.56, 23.56]
+        }),
+                interactive: true,
+            }
+        }
+        function style_OverheadTank_5_1() {
+            return {
+                pane: 'pane_OverheadTank_5',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/accommodation_camping.svg',
+            iconSize: [15.2, 15.2]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_OverheadTank_5');
+        map.getPane('pane_OverheadTank_5').style.zIndex = 405;
+        map.getPane('pane_OverheadTank_5').style['mix-blend-mode'] = 'normal';
+        var layer_OverheadTank_5 = new L.geoJson.multiStyle(json_OverheadTank_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_OverheadTank_5',
+            layerName: 'layer_OverheadTank_5',
+            pane: 'pane_OverheadTank_5',
+            onEachFeature: pop_OverheadTank_5,
+            pointToLayers: [function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_OverheadTank_5_0(feature));
+            },function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_OverheadTank_5_1(feature));
+            },
+        ]});
+        bounds_group.addLayer(layer_OverheadTank_5);
+        map.addLayer(layer_OverheadTank_5);
+        function pop_TubeWells_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Type</th>\
+                        <td>' + (feature.properties['Type'] !== null ? autolinker.link(feature.properties['Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name / Location</th>\
+                        <td>' + (feature.properties['Name / Location'] !== null ? autolinker.link(feature.properties['Name / Location'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">No. of water tapping points</th>\
+                        <td>' + (feature.properties['No. of water tapping points'] !== null ? autolinker.link(feature.properties['No. of water tapping points'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Quantity of water tapped in MLD</th>\
+                        <td>' + (feature.properties['Quantity of water tapped in MLD'] !== null ? autolinker.link(feature.properties['Quantity of water tapped in MLD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Latitude'] !== null ? autolinker.link(feature.properties['Latitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Longitude'] !== null ? autolinker.link(feature.properties['Longitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_TubeWells_6_0() {
+            return {
+                pane: 'pane_TubeWells_6',
+                radius: 6.4,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            }
+        }
+        function style_TubeWells_6_1() {
+            return {
+                pane: 'pane_TubeWells_6',
+                radius: 1.4,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_TubeWells_6');
+        map.getPane('pane_TubeWells_6').style.zIndex = 406;
+        map.getPane('pane_TubeWells_6').style['mix-blend-mode'] = 'normal';
+        var layer_TubeWells_6 = new L.geoJson.multiStyle(json_TubeWells_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_TubeWells_6',
+            layerName: 'layer_TubeWells_6',
+            pane: 'pane_TubeWells_6',
+            onEachFeature: pop_TubeWells_6,
+            pointToLayers: [function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_TubeWells_6_0(feature));
+            },function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_TubeWells_6_1(feature));
+            },
+        ]});
+        bounds_group.addLayer(layer_TubeWells_6);
+        map.addLayer(layer_TubeWells_6);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>Water Components Asset Mapping of Varanasi City</h2>';
+            };
+            title.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/TubeWells_6.png" /> Tube Wells': layer_TubeWells_6,'<img src="legend/OverheadTank_5.png" /> Overhead Tank': layer_OverheadTank_5,'<img src="legend/PumpingStation_4.png" /> Pumping Station': layer_PumpingStation_4,'<img src="legend/STP_3.png" /> STP': layer_STP_3,'<img src="legend/WTP_2.png" /> WTP': layer_WTP_2,'Ward_Boundary<br /><table><tr><td style="text-align: center;"><img src="legend/Ward_Boundary_1_500089390.png" /></td><td>5000 - 8939</td></tr><tr><td style="text-align: center;"><img src="legend/Ward_Boundary_1_8939125221.png" /></td><td>8939 - 12522</td></tr><tr><td style="text-align: center;"><img src="legend/Ward_Boundary_1_12522139012.png" /></td><td>12522 - 13901</td></tr><tr><td style="text-align: center;"><img src="legend/Ward_Boundary_1_13901194523.png" /></td><td>13901 - 19452</td></tr><tr><td style="text-align: center;"><img src="legend/Ward_Boundary_1_19452300004.png" /></td><td>19452 - 30000</td></tr></table>': layer_Ward_Boundary_1,"OpenStreetMap": layer_OpenStreetMap_0,}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
